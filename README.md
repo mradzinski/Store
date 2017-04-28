@@ -1,11 +1,8 @@
 [![Build Status](https://travis-ci.org/NYTimes/Store.svg?branch=master)](https://travis-ci.org/NYTimes/Store)
 
+![Store](https://www.milkadeal.com/storage/128000/118240/68ccf50a75b5277678c52752077c19b5.jpg)
 
-# Store
-
-Store is an Android library for async data loading from network or two levels of caching.  
-
-NOTE: While this library is production ready, it is still in early stages and some APIs may be renamed/changed.
+Store is an Android library for effortless, reactive data loading.  
 
 ### The Problems:
 
@@ -136,7 +133,7 @@ Our updated data flow now looks like this:
 
 ### Middleware - GsonSourceParser
 
-There are also seperate middleware libraries with parsers to help in cases where your fetcher is a Reader, BufferedSource or String and your parser is Gson:
+There are also separate middleware libraries with parsers to help in cases where your fetcher is a Reader, BufferedSource or String and your parser is Gson:
 - GsonReaderParser
 - GsonSourceParser
 - GsonStringParser
@@ -209,7 +206,7 @@ If using SQLite we recommend working with SqlBrite. If you are not using SqlBrit
 
 ### Middleware - SourcePersister & FileSystem
 
-We've found the fastest form of persistence is streaming network responses directly to disk. As a result, we have included a seperate library with a reactive FileSystem which depends on Okio BufferedSources. We have also included a FileSystemPersister which will give you disk caching and works beautifully with GsonSourceParser. When using the FileSystemPersister you must pass in a `PathResolver` which will tell the file system how to name the paths to cache entries. 
+We've found the fastest form of persistence is streaming network responses directly to disk. As a result, we have included a separate library with a reactive FileSystem which depends on Okio BufferedSources. We have also included a FileSystemPersister which will give you disk caching and works beautifully with GsonSourceParser. When using the FileSystemPersister you must pass in a `PathResolver` which will tell the file system how to name the paths to cache entries. 
 
 Now back to our first example:
 
@@ -268,6 +265,7 @@ public class SampleStore extends RealStore<String, BarCode> {
         super(fetcher, persister);
     }
 }
+```
 
 Subclassing is useful when you’d like to inject Store dependencies or add a few helper methods to a store:
 
@@ -284,7 +282,7 @@ public class SampleStore extends RealStore<String, BarCode> {
 ### Artifacts
 Note: Release is in Sync with current state of master (not develop) branch
 
-**CurrentVersion = 2.0.0**
+**CurrentVersion = 2.0.4**
 
 + **Cache** Cache extracted from Guava (keeps method count to a minimum)
 
@@ -304,7 +302,7 @@ Note: Release is in Sync with current state of master (not develop) branch
 + **Middleware-Jackson** Sample Jackon parsers, (feel free to create more and open PRs)
 
     ```groovy
-    compile 'com.nytimes.android:middleware:-jackson:CurrentVersion'
+    compile 'com.nytimes.android:middleware-jackson:CurrentVersion'
     ```
 + **Middleware-Moshi** Sample Moshi parsers, (feel free to create more and open PRs)
 
@@ -316,10 +314,29 @@ Note: Release is in Sync with current state of master (not develop) branch
 	```groovy
 	compile 'com.nytimes.android:filesystem:CurrentVersion'
 	```
+**RxJava2**
 
+There is an experimental RxJava2 Branch as well.  
+feature/rx2 which has artifacts, use at your own risk for :-)
+   
+```
+    com.nytimes.android:store2:0.0.1-SNAPSHOT
+    
+    com.nytimes.android:cache:0.0.1-SNAPSHOT
+    
+    com.nytimes.android:middleware2:0.0.1-SNAPSHOT
+    
+    com.nytimes.android:filesystem2:0.0.1-SNAPSHOT
+```
 
 ### Sample Project
 
 See the app for example usage of Store. Alternatively, the Wiki contains a set of recipes for common use cases
 + Simple Example: Retrofit + Store
 + Complex Example: BufferedSource from Retrofit (Can be OKHTTP too) + our FileSystem + our GsonSourceParser
+
+### Talks
+[DroidCon Italy](https://youtu.be/TvsOsgd0--c)
+[Android Makers](https://www.youtube.com/watch?time_continue=170&v=G1MebI2k9aA)
+
+

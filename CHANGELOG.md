@@ -3,6 +3,57 @@ Change Log
 Version 2.0.0 *(2017-02-13)*
 ----------------------------
 
+Version 2.0.4 *(2017-04-12)*
+----------------------------
+
+**Bug Fixes and Stability Improvements**
+
+* #178 Standardize store.stream() to emit only new items
+* #177 Fix typos
+* #176 Close source after write to filesystem
+* #166 Remove apt dependency and use annotationProcessor instead
+
+
+Version 2.0.3 *(2017-03-23)*
+----------------------------
+
+**New Features**
+
+* #153 Translate Readme to Russian
+
+**Bug Fixes and Stability Improvements**
+
+* #164 FileSystemPersister.persisterIsStale() should return false if record is missing or policy is unspecified
+* #166 Remove apt dependency and use annotationProcessor instead
+
+Version 2.0.2 *(2017-03-13)*
+----------------------------
+
+**New Features**
+* (#146) Remove dagger dependency and unused dependencies clean up
+
+**Bug Fixes and Stability Improvements**
+* (#144) clearMemory() (deprecated) now calls clear()
+* (#149) fix sample app, store should be created within application class
+* (#151) NoopParser should mimic Memcache settings
+* (#154) Readme typos
+
+Version 2.0.1 *(2017-02-28)*
+----------------------------
+
+**New Features**
+* (#137) FileSystemRecordPersister
+* (#138) Introduce RecordPersisterFactory
+* (#140) Add FileSystemRecordPersisterFactory
+
+**Bug Fixes and Stability Improvements**
+* (#134) Do not depend on lint task if it does not exist.
+* (#133) Remove StandardCharsets usage to work on API < 19
+* (#136) add KeyParseFunc for times when parser needs input val
+* (#141) fix clear one barcode
+
+Version 2.0.0 *(2017-02-13)*
+----------------------------
 
 **Breaking Changes**  - See Wiki/Closed PRs for more detail
 

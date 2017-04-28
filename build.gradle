@@ -19,7 +19,6 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.6'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
         classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.8'
@@ -50,13 +49,11 @@ allprojects {
 }
 
 ext {
-    // SDK versions
-
     // POM file
     GROUP = "com.nytimes.android"
-    VERSION_NAME = "2.0.1-SNAPSHOT"
+    VERSION_NAME = "0.0.1-SNAPSHOT"
     POM_PACKAGING = "pom"
-    POM_DESCRIPTION = "Store"
+    POM_DESCRIPTION = "Store2 is built with RxJava2"
 
     POM_URL = "https://github.com/nytimes/Store/"
     POM_SCM_URL = "https://github.com/nytimes/Store/"
