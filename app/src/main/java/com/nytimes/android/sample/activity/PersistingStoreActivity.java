@@ -7,8 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
-import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.Store;
+import com.nytimes.android.external.store2.base.impl.BarCode;
+import com.nytimes.android.external.store2.base.impl.Store;
 import com.nytimes.android.sample.R;
 import com.nytimes.android.sample.SampleApp;
 import com.nytimes.android.sample.data.model.Children;
@@ -18,9 +18,9 @@ import com.nytimes.android.sample.reddit.PostAdapter;
 
 import java.util.List;
 
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.widget.Toast.makeText;
 
@@ -52,12 +52,13 @@ public class PersistingStoreActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("CheckReturnValue")
     public void loadPosts() {
         BarCode awwRequest = new BarCode(RedditData.class.getSimpleName(), "aww");
 
         this.persistedStore
                 .get(awwRequest)
-                .flatMap(this::sanitizeData)
+                .flatMapObservable(this::sanitizeData)
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -74,7 +75,7 @@ public class PersistingStoreActivity extends AppCompatActivity {
     }
 
     private Observable<Post> sanitizeData(RedditData redditData) {
-        return Observable.from(redditData.data().children())
+        return Observable.fromIterable(redditData.data().children())
                 .map(Children::data);
     }
 

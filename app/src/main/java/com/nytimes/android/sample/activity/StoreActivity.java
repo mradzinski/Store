@@ -8,8 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.Store;
+import com.nytimes.android.external.store2.base.impl.BarCode;
+import com.nytimes.android.external.store2.base.impl.Store;
 import com.nytimes.android.sample.R;
 import com.nytimes.android.sample.SampleApp;
 import com.nytimes.android.sample.data.model.Children;
@@ -19,9 +19,12 @@ import com.nytimes.android.sample.reddit.PostAdapter;
 
 import java.util.List;
 
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.widget.Toast.makeText;
 
@@ -51,12 +54,18 @@ public class StoreActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("CheckReturnValue")
     public void loadPosts() {
         BarCode awwRequest = new BarCode(RedditData.class.getSimpleName(), "aww");
 
         this.nonPersistedStore
                 .get(awwRequest)
-                .flatMap(this::sanitizeData)
+                .flatMapObservable(new Function<RedditData, ObservableSource<Post>>() {
+                    @Override
+                    public ObservableSource<Post> apply(@NonNull RedditData redditData) throws Exception {
+                        return sanitizeData(redditData);
+                    }
+                })
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -74,7 +83,7 @@ public class StoreActivity extends AppCompatActivity {
     }
 
     private Observable<Post> sanitizeData(RedditData redditData) {
-        return Observable.from(redditData.data().children())
+        return Observable.fromIterable(redditData.data().children())
                 .map(Children::data);
     }
 

@@ -1,18 +1,16 @@
 package com.nytimes.android.sample;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.nytimes.android.external.fs.SourcePersisterFactory;
-import com.nytimes.android.external.store.base.Fetcher;
-import com.nytimes.android.external.store.base.Persister;
-import com.nytimes.android.external.store.base.impl.BarCode;
-import com.nytimes.android.external.store.base.impl.MemoryPolicy;
-import com.nytimes.android.external.store.base.impl.Store;
-import com.nytimes.android.external.store.base.impl.StoreBuilder;
-import com.nytimes.android.external.store.middleware.GsonParserFactory;
+import com.nytimes.android.external.fs2.SourcePersisterFactory;
+import com.nytimes.android.external.store2.base.Persister;
+import com.nytimes.android.external.store2.base.impl.BarCode;
+import com.nytimes.android.external.store2.base.impl.MemoryPolicy;
+import com.nytimes.android.external.store2.base.impl.Store;
+import com.nytimes.android.external.store2.base.impl.StoreBuilder;
+import com.nytimes.android.external.store2.middleware.GsonParserFactory;
 import com.nytimes.android.sample.data.model.GsonAdaptersModel;
 import com.nytimes.android.sample.data.model.RedditData;
 import com.nytimes.android.sample.data.remote.Api;
@@ -20,13 +18,12 @@ import com.nytimes.android.sample.data.remote.Api;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
-
+import io.reactivex.Single;
+import okhttp3.ResponseBody;
 import okio.BufferedSource;
-import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
-import retrofit2.RxJavaCallAdapterFactory;
-import rx.Observable;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SampleApp extends Application {
 
@@ -63,11 +60,11 @@ public class SampleApp extends Application {
         return StoreBuilder.<RedditData>barcode()
                 .fetcher(barCode -> provideRetrofit().fetchSubreddit(barCode.getKey(), "10"))
                 .memoryPolicy(
-                    MemoryPolicy
-                        .builder()
-                        .setExpireAfter(10)
-                        .setExpireAfterTimeUnit(TimeUnit.SECONDS)
-                        .build()
+                        MemoryPolicy
+                                .builder()
+                                .setExpireAfter(10)
+                                .setExpireAfterTimeUnit(TimeUnit.SECONDS)
+                                .build()
                 )
                 .open();
     }
@@ -84,16 +81,16 @@ public class SampleApp extends Application {
         return SourcePersisterFactory.create(getApplicationContext().getCacheDir());
     }
 
-    private Observable<BufferedSource> fetcher(BarCode barCode) {
+    private Single<BufferedSource> fetcher(BarCode barCode) {
         return provideRetrofit().fetchSubredditForPersister(barCode.getKey(), "10")
-                .map(responseBody -> responseBody.source());
+                .map(ResponseBody::source);
     }
 
     private Api provideRetrofit() {
         return new Retrofit.Builder()
                 .baseUrl("http://reddit.com/")
                 .addConverterFactory(GsonConverterFactory.create(provideGson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .validateEagerly(BuildConfig.DEBUG)  // Fail early: check Retrofit configuration at creation time in Debug build.
                 .build()
                 .create(Api.class);
